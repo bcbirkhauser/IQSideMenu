@@ -3,7 +3,7 @@ IQSideMenu
 
 Best side menu for your iOS Apps.
 
-
+* Available by MIT License
 * Swift
 * iOS 7+
 * Any screen size
@@ -13,6 +13,7 @@ Best side menu for your iOS Apps.
 * Ability to improve and customizing through subclassing
 
 MIT License
+==========
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
