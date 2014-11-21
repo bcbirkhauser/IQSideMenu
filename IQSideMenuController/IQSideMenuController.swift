@@ -2,9 +2,25 @@
 //  IQSideMenuController.swift
 //  IQSideMenu
 //
-//  Created by Alexander Orlov on 02.11.14.
-//  Copyright (c) 2014 Alexander Orlov. All rights reserved.
+//  Copyright © 2014 Orlov Alexander
 //
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
 
 import Foundation
 import UIKit
@@ -62,6 +78,25 @@ class IQSideMenuController: UIViewController, UIScrollViewDelegate {
             oldValue?.view.removeFromSuperview()
             if (self.isViewLoaded()) {
                 self.insertContentView()
+            }
+        }
+    }
+    
+    //MARK: Interface
+    func openMenu(animated: Bool) {
+        self.scrollableView?.setContentOffset(CGPoint(x: 0.0, y: self.scrollableView!.contentOffset.y), animated: animated);
+    }
+    
+    func closeMenu(animated: Bool) {
+        self.scrollableView?.setContentOffset(CGPoint(x: self.menuViewController!.view.bounds.size.width, y: self.scrollableView!.contentOffset.y), animated: animated);
+    }
+    
+    func toggleMenu(animated: Bool) {
+        if (self.scrollableView != nil) {
+            if (self.currentPercentOfAnimation == 0.0) {
+                self.closeMenu(animated)
+            } else {
+                self.openMenu(animated)
             }
         }
     }
@@ -204,7 +239,7 @@ class IQSideMenuController: UIViewController, UIScrollViewDelegate {
         
         let lowerMenuViewXPosition: CGFloat = 0.0
         let upperMenuViewXPosition: CGFloat = menuViewWidth * 0.5
-        let menuViewX = lowerMenuViewXPosition + (upperMenuViewXPosition - lowerMenuViewXPosition) * currentPercentOfAnimation
+        let menuViewX = lowerMenuViewXPosition + (upperMenuViewXPosition - lowerMenuViewXPosition) * self.currentPercentOfAnimation
         
         self.menuViewController?.view.frame = CGRectMake(menuViewX, 0.0, menuViewWidth, menuViewHeight)
         self.contentViewController?.view.frame = CGRectMake(menuViewWidth, 0.0, contentViewWidth, contentViewHeight)
@@ -213,7 +248,7 @@ class IQSideMenuController: UIViewController, UIScrollViewDelegate {
         self.scrollableView?.contentOffset = CGPointMake(currentContentOffsetX, 0.0)
         self.scrollableView?.frame = CGRectMake(0, 0, menuViewWidth, self.view.bounds.size.height)
         
-        self.performAnimation(currentPercentOfAnimation)
+        self.performAnimation(self.currentPercentOfAnimation)
     }
     
     private func performAnimation(percentOfAnimation: CGFloat) {

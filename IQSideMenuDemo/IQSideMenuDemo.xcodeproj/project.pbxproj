@@ -7,12 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A75D281F1A1F2A7F0095AEEF /* IQDemoContentController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A75D281D1A1F2A7F0095AEEF /* IQDemoContentController.swift */; };
+		A75D28201A1F2A7F0095AEEF /* IQDemoContentController.xib in Resources */ = {isa = PBXBuildFile; fileRef = A75D281E1A1F2A7F0095AEEF /* IQDemoContentController.xib */; };
 		A76920031A06A7C100E608C7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7691FFD1A06A7C100E608C7 /* AppDelegate.swift */; };
 		A769200D1A06AA7F00E608C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A769200C1A06AA7F00E608C7 /* Images.xcassets */; };
 		A774DB4C1A06B2C7002A0B82 /* IQSideMenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A774DB4B1A06B2C7002A0B82 /* IQSideMenuController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A75D281D1A1F2A7F0095AEEF /* IQDemoContentController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = IQDemoContentController.swift; path = IQSideMenuDemo/Sources/Content/IQDemoContentController.swift; sourceTree = SOURCE_ROOT; };
+		A75D281E1A1F2A7F0095AEEF /* IQDemoContentController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = IQDemoContentController.xib; path = IQSideMenuDemo/Sources/Content/IQDemoContentController.xib; sourceTree = SOURCE_ROOT; };
 		A7691FD71A06A75E00E608C7 /* IQSideMenuDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IQSideMenuDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A7691FFD1A06A7C100E608C7 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A7691FFF1A06A7C100E608C7 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -87,6 +91,8 @@
 		A76920011A06A7C100E608C7 /* Content */ = {
 			isa = PBXGroup;
 			children = (
+				A75D281D1A1F2A7F0095AEEF /* IQDemoContentController.swift */,
+				A75D281E1A1F2A7F0095AEEF /* IQDemoContentController.xib */,
 			);
 			path = Content;
 			sourceTree = "<group>";
@@ -164,6 +170,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A75D28201A1F2A7F0095AEEF /* IQDemoContentController.xib in Resources */,
 				A769200D1A06AA7F00E608C7 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -176,6 +183,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A76920031A06A7C100E608C7 /* AppDelegate.swift in Sources */,
+				A75D281F1A1F2A7F0095AEEF /* IQDemoContentController.swift in Sources */,
 				A774DB4C1A06B2C7002A0B82 /* IQSideMenuController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
