@@ -2,9 +2,25 @@
 //  AppDelegate.swift
 //  IQSideMenuDemo
 //
-//  Created by Alexander Orlov on 02.11.14.
-//  Copyright (c) 2014 Alexander Orlov. All rights reserved.
+//  Copyright © 2014 Orlov Alexander
 //
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
 
 import UIKit
 
@@ -14,14 +30,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     let sideMenuController: IQSideMenuController = IQSideMenuController()
     let menuViewController: UIViewController = UIViewController()
-    let contentViewController: UINavigationController = UINavigationController(rootViewController: UITableViewController())
+    let demoController: IQDemoContentController = IQDemoContentController(nibName: "IQDemoContentController", bundle: NSBundle.mainBundle())
+    var contentViewController: UINavigationController?
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: NSDictionary?) -> Bool {
+        contentViewController = UINavigationController(rootViewController: demoController)
+        
         menuViewController.view.backgroundColor = UIColor.redColor()
         
         sideMenuController.menuViewController = menuViewController
         sideMenuController.contentViewController = contentViewController
-        sideMenuController.menuViewWidthCalculationClosure = IQSideMenuController.MenuViewWidthCalculators.constantCalculator(ceil(min(UIScreen.mainScreen().applicationFrame.size.width, UIScreen.mainScreen().applicationFrame.size.height)) * 0.85)
+        //sideMenuController.menuViewWidthCalculationClosure = IQSideMenuController.MenuViewWidthCalculators.constantCalculator(ceil(min(UIScreen.mainScreen().applicationFrame.size.width, UIScreen.mainScreen().applicationFrame.size.height)) * 0.85)
+        
+        demoController.sideMenu = sideMenuController
         
         window = UIWindow(frame: UIScreen.mainScreen().bounds)
         window!.rootViewController = sideMenuController
