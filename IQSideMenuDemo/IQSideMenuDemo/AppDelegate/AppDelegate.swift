@@ -40,7 +40,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         sideMenuController.menuViewController = menuViewController
         sideMenuController.contentViewController = contentViewController
-        //sideMenuController.menuViewWidthCalculationClosure = IQSideMenuController.MenuViewWidthCalculators.constantCalculator(ceil(min(UIScreen.mainScreen().applicationFrame.size.width, UIScreen.mainScreen().applicationFrame.size.height)) * 0.85)
+        sideMenuController.menuViewWidthCalculationClosure = IQSideMenuController.MenuViewWidthCalculators.constantCalculator(ceil(min(UIScreen.mainScreen().applicationFrame.size.width, UIScreen.mainScreen().applicationFrame.size.height)) * 0.85)
         
         demoController.sideMenu = sideMenuController
         
