@@ -2,25 +2,9 @@
 //  IQSideMenuController.swift
 //  IQSideMenu
 //
-//  Copyright © 2014 Orlov Alexander
+//  Created by Alexander Orlov on 02.11.14.
+//  Copyright (c) 2014 Alexander Orlov. All rights reserved.
 //
-//  Permission is hereby granted, free of charge, to any person obtaining a copy
-//  of this software and associated documentation files (the "Software"), to deal
-//  in the Software without restriction, including without limitation the rights
-//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-//  copies of the Software, and to permit persons to whom the Software is
-//  furnished to do so, subject to the following conditions:
-//
-//  The above copyright notice and this permission notice shall be included in
-//  all copies or substantial portions of the Software.
-//
-//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-//  THE SOFTWARE.
 
 import Foundation
 import UIKit
@@ -69,6 +53,21 @@ class IQSideMenuController: UIViewController, UIScrollViewDelegate {
             }
         }
     }
+    
+    var rightMenuViewController: UIViewController? {
+        willSet {
+            newValue?.removeFromParentViewController()
+            newValue?.view.removeFromSuperview()
+        }
+        didSet {
+            oldValue?.view.removeFromSuperview()
+            if (self.isViewLoaded()) {
+                self.insertRightMenuView()
+                println("do insert right menu view")
+            }
+        }
+    }
+    
     var contentViewController: UIViewController? {
         willSet {
             newValue?.removeFromParentViewController()
@@ -82,30 +81,12 @@ class IQSideMenuController: UIViewController, UIScrollViewDelegate {
         }
     }
     
-    //MARK: Interface
-    func openMenu(animated: Bool) {
-        self.scrollableView?.setContentOffset(CGPoint(x: 0.0, y: self.scrollableView!.contentOffset.y), animated: animated);
-    }
-    
-    func closeMenu(animated: Bool) {
-        self.scrollableView?.setContentOffset(CGPoint(x: self.menuViewController!.view.bounds.size.width, y: self.scrollableView!.contentOffset.y), animated: animated);
-    }
-    
-    func toggleMenu(animated: Bool) {
-        if (self.scrollableView != nil) {
-            if (self.currentPercentOfAnimation == 0.0) {
-                self.closeMenu(animated)
-            } else {
-                self.openMenu(animated)
-            }
-        }
-    }
-    
     var menuViewWidthCalculationClosure: (sideMenuControllerWidth: CGFloat) -> CGFloat = MenuViewWidthCalculators.percentCalculator(Internal.initialMenuWidthPercentOfScreenMinimumWidth)
     var progressTrackingClosure: ((progress: CGFloat) -> ())?
     var animationClosure: ((progress: CGFloat, menuView: UIView?, contentView: UIView?) -> ())?
     private  var scrollableView: IQSideMenuScroller?
     private  var currentPercentOfAnimation: CGFloat = 1.0
+    private  var currentRightPercentOfAnimation: CGFloat = 1.0
     
     //MARK: Init
     private func designedInit() {
@@ -181,8 +162,42 @@ class IQSideMenuController: UIViewController, UIScrollViewDelegate {
     
     deinit {
         self.menuViewController = nil;
+        self.rightMenuViewController = nil
         self.contentViewController = nil;
         self.scrollableView = nil;
+    }
+    
+    func openMenu(animated: Bool) {
+        self.scrollableView?.setContentOffset(CGPoint(x: 0.0, y: self.scrollableView!.contentOffset.y), animated: animated);
+    }
+    
+    func closeMenu(animated: Bool) {
+        self.scrollableView?.setContentOffset(CGPoint(x: self.menuViewController!.view.bounds.size.width, y: self.scrollableView!.contentOffset.y), animated: animated);
+    }
+    
+    func toggleMenu(animated: Bool) {
+        if (self.scrollableView != nil) {
+            if (self.currentPercentOfAnimation == 0.0) {
+                self.closeMenu(animated)
+            } else {
+                self.openMenu(animated)
+            }
+        }
+    }
+    
+    func toggleRightSideMenu(animated: Bool) {
+        
+        if(self.currentPercentOfAnimation == 2.0) {
+            //close menu
+            self.closeMenu(animated)
+        } else {
+            //open menu
+            
+            var newX:CGFloat = (self.rightMenuViewController!.view.bounds.width * 2)
+            
+            
+            self.scrollableView?.setContentOffset(CGPoint(x: newX, y: self.scrollableView!.contentOffset.y), animated: animated);
+        }
     }
     
     //MARK: Implementation
@@ -201,6 +216,24 @@ class IQSideMenuController: UIViewController, UIScrollViewDelegate {
         self.scrollableView!.sendSubviewToBack(self.menuViewController!.view)
         self.performLayout()
     }
+    
+    private func insertRightMenuView() {
+        if (self.rightMenuViewController == nil) {
+            return
+        }
+        if (contains(self.scrollableView!.subviews as [UIView], self.rightMenuViewController!.view)) {
+            return
+        }
+        self.rightMenuViewController!.view.autoresizingMask = UIViewAutoresizing.None
+        self.rightMenuViewController!.view.layer.shouldRasterize = true
+        self.rightMenuViewController!.view.layer.rasterizationScale = UIScreen.mainScreen().scale
+        self.addChildViewController(self.rightMenuViewController!)
+        self.scrollableView!.addSubview(self.rightMenuViewController!.view)
+        //        self.scrollableView!.sendSubviewToBack(self.rightMenuViewController!.view)
+        self.performLayout()
+    }
+    
+    
     
     private func insertContentView() {
         if (self.contentViewController == nil) {
@@ -233,22 +266,46 @@ class IQSideMenuController: UIViewController, UIScrollViewDelegate {
         let contentViewWidth: CGFloat = self.view.bounds.size.width
         let contentViewHeight: CGFloat = self.view.bounds.size.height
         let menuViewWidth: CGFloat = self.menuViewWidthCalculationClosure(sideMenuControllerWidth: self.view.bounds.size.width)
+        
         let menuViewHeight: CGFloat = self.view.bounds.size.height
         
-        let currentContentOffsetX = self.currentPercentOfAnimation * menuViewWidth
+        var currentContentOffsetX = self.currentPercentOfAnimation * menuViewWidth
+        var maxOffset = contentViewWidth;
+        if(self.rightMenuViewController != nil) {
+            maxOffset = self.rightMenuViewController!.view.bounds.width * 2
+        }
+        
+        
+        if(currentContentOffsetX > maxOffset) {
+            currentContentOffsetX = maxOffset
+        }
+        
+        
         
         let lowerMenuViewXPosition: CGFloat = 0.0
         let upperMenuViewXPosition: CGFloat = menuViewWidth * 0.5
-        let menuViewX = lowerMenuViewXPosition + (upperMenuViewXPosition - lowerMenuViewXPosition) * self.currentPercentOfAnimation
+        let menuViewX = lowerMenuViewXPosition + (upperMenuViewXPosition - lowerMenuViewXPosition) * currentPercentOfAnimation
+        
+        
+        let rightMenuViewX = contentViewWidth + menuViewWidth
+        
+        
+        
+        self.rightMenuViewController?.view.frame = CGRectMake(rightMenuViewX, 0.0, menuViewWidth, menuViewHeight)
         
         self.menuViewController?.view.frame = CGRectMake(menuViewX, 0.0, menuViewWidth, menuViewHeight)
         self.contentViewController?.view.frame = CGRectMake(menuViewWidth, 0.0, contentViewWidth, contentViewHeight)
         
-        self.scrollableView?.contentSize = CGSizeMake(menuViewWidth * 2, self.view.bounds.size.height)
+        //check to see if we have a right menu, if we do, increase the width of the scrollableview
+        if(self.rightMenuViewController != nil) {
+            self.scrollableView?.contentSize = CGSizeMake(menuViewWidth * 2 + self.view.bounds.width, self.view.bounds.size.height)
+        } else {
+            self.scrollableView?.contentSize = CGSizeMake(menuViewWidth * 2, self.view.bounds.size.height)
+            
+        }
         self.scrollableView?.contentOffset = CGPointMake(currentContentOffsetX, 0.0)
         self.scrollableView?.frame = CGRectMake(0, 0, menuViewWidth, self.view.bounds.size.height)
-        
-        self.performAnimation(self.currentPercentOfAnimation)
+        self.performAnimation(currentPercentOfAnimation)
     }
     
     private func performAnimation(percentOfAnimation: CGFloat) {
